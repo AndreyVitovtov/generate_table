@@ -123,11 +123,12 @@ class GenerateTable
         return $number;
     }
 
-    private function check(): void {
+    private function check(): void
+    {
         $this->countArrayKey = max(array_map('count', $this->data));
-        foreach($this->data as $key => $data) {
+        foreach ($this->data as $key => $data) {
             $count = $this->countArrayKey - count($data);
-            for($i = 0; $i <= $count; $i++) {
+            for ($i = 0; $i <= $count; $i++) {
                 $this->data[$key][] = " ";
             }
         }
@@ -135,6 +136,7 @@ class GenerateTable
 
     public function execute(bool $numbering = false, string $filename = null): string
     {
+        $head = is_string(array_keys($this->data)[0] ?? 0);
         if ($numbering) {
             $this->data = array_merge(
                 [self::NUMBERING => $this->numbering($this->countArrayKey)],
@@ -142,7 +144,7 @@ class GenerateTable
             );
             $this->lengths();
         }
-        $table = $this->head() . $this->body();
+        $table = ($head ? $this->head() : $this->delimiter(true) . "\n") . $this->body();
         if ($filename) file_put_contents($filename . ".txt", $table);
         return $table;
     }
